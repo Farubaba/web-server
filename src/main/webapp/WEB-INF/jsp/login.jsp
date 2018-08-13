@@ -31,7 +31,8 @@ String pageName = pageContext.getPage().getClass().getSimpleName();
   	<h2>
   		<%= pageName.replace("_002d", "-").replace("_", ".") %> :		
   	</h2>
-  	<h4>查看地址栏Url，如果没有给userName和password参数，则并不会返回User对象，下面也不会有值显示：</h4>
+  	<h4>查看地址栏Url，输入正确的用户名：<font color="red">farubaba</font> 密码：<font color="red">123456</font>，则会登陆成功，返回user数据。</h4>
+  	<h4>如果没有给userName和password参数或者参数错误，则并不会返回User对象，下面也不会有值显示：</h4>
   	<h4>JSON String User: [jsonUser] = <s:property value="jsonUser" /></h4>
   	<h4>Object User: [user] = <s:property value="user" /></h4>
   	<p>getServletName = <%= getServletName() %></p>
