@@ -13,12 +13,18 @@
     <!-- <constant name="struts.devMode" value="true"/> -->
     
    <constant name="api.system.config" value="api/system/config/"/>
-    
-    <package name="basicstruts2" extends="json-default,struts-default">
-        <action name="index">
+   
+    <package name="dispather" extends="json-default,struts-default">
+    	<action name="index">
             <result>/index.jsp</result>
         </action>
         
+        <action name="api" class="com.farubaba.mobile.server.action.Dispatcher" method="api">
+            <result>/WEB-INF/jsp/api.jsp</result>
+        </action>
+    </package>
+    
+    <package name="basicstruts2" extends="json-default,struts-default">        
         <action name="hello" class="com.farubaba.mobile.server.action.HelloWorldAction" method="execute">
             <result name="success">/HelloWorld.jsp</result>
         </action>

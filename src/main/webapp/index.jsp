@@ -29,6 +29,7 @@ String pageName = pageContext.getPage().getClass().getSimpleName();
     	<li>通过 login.action 访问 (没有给userName和password参数) : <a href="<s:url action='login'/>">[mobile-server/WEB-INF/resources/jsp/login.jsp]</a></li>
     	<li>通过 jettyDebugConfig.action 访问 : <a href="<s:url action='jettyDebugConfig'/>">[mobile-server/WEB-INF/resources/jsp/maven-jetty-debug-config.jsp]</a></li>
     	<li>通过 json plugin 返回系统配置json字符串：<a href="api/sys/config/v1"><%=basePath%>api/sys/config/v1</a></li>
+    	<li>mobile-server中提供的全部api接口：<a href="<s:url action='api'/>">跳转到api接口列表页面</a></li>
     </ol>
     
     <p><p><p><s:include value="road-map.jsp"></s:include>
