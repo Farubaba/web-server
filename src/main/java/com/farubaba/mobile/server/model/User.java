@@ -1,5 +1,10 @@
 package com.farubaba.mobile.server.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class User {
 
 	private String id;
@@ -11,7 +16,12 @@ public class User {
 	private String avatar;
 	private String address;
 	private double balance;
-
+	private String version;
+	
+	private Book favoriteBook;
+	private List<Book> books = new ArrayList<Book>();
+	private Map<String,Book> bookMap = new HashMap<String, Book>();
+	
 	public String getId() {
 		return id;
 	}
@@ -75,11 +85,43 @@ public class User {
 	public void setBalance(double balance) {
 		this.balance = balance;
 	}
+	
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+	
+	public Book getFavoriteBook() {
+		return favoriteBook;
+	}
+
+	public void setFavoriteBook(Book favoriteBook) {
+		this.favoriteBook = favoriteBook;
+	}
+
+	public List<Book> getBooks() {
+		return books;
+	}
+
+	public void setBooks(List<Book> books) {
+		this.books = books;
+	}	
+
+	public Map<String, Book> getBookMap() {
+		return bookMap;
+	}
+
+	public void setBookMap(Map<String, Book> bookMap) {
+		this.bookMap = bookMap;
+	}
 
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + ", login=" + login + ", level="
-				+ level + ", avatar=" + avatar + ", address=" + address + ", balance=" + balance + "]";
+				+ level + ", avatar=" + avatar + ", address=" + address + ", balance=" + balance + ", version = "+ version +" ]";
 	}
 
 }

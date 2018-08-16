@@ -4,10 +4,17 @@
     "http://struts.apache.org/dtds/struts-2.5.dtd">
 
 <struts>
-
-    <constant name="struts.devMode" value="true" />
-
-    <package name="basicstruts2" extends="struts-default">
+    
+	<constant name="struts.action.extension" value="" />  
+    <constant name="struts.ui.theme" value="simple" />  
+    <constant name="struts.i18n.encoding" value="utf-8" />  
+    <constant name="struts.multipart.maxSize" value="1073741824"/>
+    <constant name="struts.devMode" value="false"/>  
+    <!-- <constant name="struts.devMode" value="true"/> -->
+    
+   <constant name="api.system.config" value="api/system/config/"/>
+    
+    <package name="basicstruts2" extends="json-default,struts-default">
         <action name="index">
             <result>/index.jsp</result>
         </action>
@@ -28,5 +35,14 @@
         	<result name="success">/WEB-INF/jsp/maven-jetty-debug-config.jsp</result>
         </action>
     </package>
-
+    
+    <!-- 单独配置namespace  ： api/system/config/-->
+	<package namespace="/api/sys/config" name="dataserver" extends="json-default,struts-default">
+	 	<action name="v2" class="com.farubaba.mobile.server.action.ConfigActionXml" method="config">
+        	<result name="json" type="json">
+        		<param name="root">user</param>  
+        	</result>
+        </action>
+	</package>
+	
 </struts>
