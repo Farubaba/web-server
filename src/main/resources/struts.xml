@@ -19,7 +19,7 @@
             <result>/index.jsp</result>
         </action>
         
-        <action name="api" class="com.farubaba.mobile.server.action.Dispatcher" method="api">
+        <action name="api" class="com.farubaba.mobile.server.action.DispatcherAction" method="api">
             <result>/WEB-INF/jsp/api.jsp</result>
         </action>
     </package>
