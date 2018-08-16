@@ -5,7 +5,7 @@
 
 <struts>
     
-	<constant name="struts.action.extension" value="" />  
+	<!--  <constant name="struts.action.extension" value="" /> -->  
     <constant name="struts.ui.theme" value="simple" />  
     <constant name="struts.i18n.encoding" value="utf-8" />  
     <constant name="struts.multipart.maxSize" value="1073741824"/>
@@ -29,7 +29,7 @@
             <result name="success">/HelloWorld.jsp</result>
         </action>
         
-        <action name="login" class="com.farubaba.mobile.server.action.LoginAction" method="login">
+        <action name="doLogin" class="com.farubaba.mobile.server.action.LoginAction" method="login">
         	<result name="success">/WEB-INF/jsp/login.jsp</result>
         </action>
         

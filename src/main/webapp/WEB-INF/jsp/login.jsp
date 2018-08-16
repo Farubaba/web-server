@@ -41,9 +41,9 @@ String pageName = pageContext.getPage().getClass().getSimpleName();
     <!--
     定义url action 和 param 
      -->
-     <s:url var="loginWithNoParam" action="login"></s:url>
+     <s:url var="loginWithNoParam" action="doLogin"></s:url>
    	
-   	<s:url var="login" action="login">
+   	<s:url var="doLogin" action="doLogin">
    		<s:param name="userName">farubaba</s:param>
    		<s:param name="password">123456</s:param>
    	</s:url>
@@ -60,11 +60,11 @@ String pageName = pageContext.getPage().getClass().getSimpleName();
    	
     <ul>
     	<li>没有登陆参数，调用 <a href="${loginWithNoParam}">login.action -> return null String</a></li>
-    	<li>提供正确登录参数，调用 <a href="${login}">login.action -> return JSON String User</a></li>
+    	<li>提供正确登录参数，调用 <a href="${doLogin}">login.action -> return JSON String User</a></li>
     	<li>提供正确登录参数，调用<a href="${userlogin}">userLogin.action -> return Object User </a></li>
     	<li>
     	使用form表单提交登录：(输入：<font color="red">farubaba</font> 和 <font color="red">123456</font> 可登录成功!登录成功后，JSON String User 和 Object User其中之一会有值)
-	    <s:form action="login">
+	    <s:form action="doLogin">
 		 	<s:textfield name="userName" label="Your name" />
 		 	<s:textfield name="password" label="Your password" />
 		 	<s:submit value="登录" cssClass="button" />

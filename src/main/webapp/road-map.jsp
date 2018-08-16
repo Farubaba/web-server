@@ -20,6 +20,6 @@ String pageName = pageContext.getPage().getClass().getSimpleName();
   		&nbsp;&nbsp;&nbsp;&nbsp;<a href="<%=basePath%>model.jsp"> model.jsp </a>
   		&nbsp;&nbsp;&nbsp;&nbsp;<a href="<%=basePath%>road-map.jsp"> road-map.jsp </a>
   		&nbsp;&nbsp;&nbsp;&nbsp;<a href="<s:url action='jettyDebugConfig'/>"> maven-jetty-debug-config.jsp </a>
-    	&nbsp;&nbsp;&nbsp;&nbsp;<a href="<s:url action='login'/>"> login.jsp </a>
+    	&nbsp;&nbsp;&nbsp;&nbsp;<a href="<s:url action='doLogin'/>"> login.jsp </a>
     	</body>
 </html>
