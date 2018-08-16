@@ -36,6 +36,6 @@ String pageName = pageContext.getPage().getClass().getSimpleName();
      	<li>Post multipart 请求：</li>
 		
     </ol>
-    <p><p><p><s:include value="road-map.jsp"></s:include>
+    <p><p><p><s:include value="../../road-map.jsp"></s:include>
   </body>
 </html>

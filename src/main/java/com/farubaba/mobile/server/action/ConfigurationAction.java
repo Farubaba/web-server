@@ -14,7 +14,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 //@ParentPackage("dataserver")
 //@Namespace("/api/sys/config") 
-@ParentPackage("basicstruts2")  
+@ParentPackage("dataserver")  
 @Namespace("/api/sys/config")  
 @Results({  
     @Result(name = "json",type="json", params={"root","user"})  
