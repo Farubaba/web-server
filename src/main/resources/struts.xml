@@ -75,6 +75,19 @@
         		<param name="root">user</param>  
         	</result>
         </action>
+        
+        <action name="vn" class="com.farubaba.mobile.server.action.ReceiveAction" method="returnReceive">
+        	<result name="json" type="json">
+        		<param name="root">receivedString</param>  
+        	</result>
+        </action>
+        
+        <action name="doSveToFile" class="com.farubaba.mobile.server.action.ReceiveAction" method="doSveToFile">
+        	<result name="json" type="json">
+        		<param name="root">receivedString</param>  
+        	</result>
+        </action>
+       
 	</package>
 	
 </struts>

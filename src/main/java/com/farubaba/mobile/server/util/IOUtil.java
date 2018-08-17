@@ -1,10 +1,13 @@
 package com.farubaba.mobile.server.util;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -18,11 +21,26 @@ public class IOUtil {
     private static final String TAG = "FileUtil";
     private static final String DOT = ".";
     private static final String FILE_PATH_SEPERATOR = File.separator;
+    private static final String UTF_8 = "utf-8";
     private static File internalFileDir;
     private static File internalCacheDir;
     private static File externalCustomFileDir;
     private static File appCustomExternalDir;
 
+    public static File createFile(String path){
+    	File file = new File(path);
+    	if(!file.exists()){
+    		if(!file.getParentFile().exists()){
+        		file.getParentFile().mkdirs();
+        	}
+    		try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
+    	return file;
+    }
     /**
      * delete file and child files
      *
@@ -165,8 +183,8 @@ public class IOUtil {
                     //LogManager.getInstance().d(counter.incrementAndGet());
                     fileOutputStream.write(buffer, 0 , perReadLen);
                     totalReadLen += perReadLen;
-                    //fileOutputStream.flush(); //
                 }
+                fileOutputStream.flush(); 
                 counter.set(0);
             }else{
                 //LogManager.getInstance().d("file not exists and createNewFile failed without exception. do nothing!!!");
@@ -232,5 +250,84 @@ public class IOUtil {
             return true;
         }
         return false;
+    }
+    
+    /**
+     * 读取指定 totalLengthToRead 长度的数据，放入内存中，最后一次性返回成字符串。
+     * 该方法不适合读取大量数据，会造成内存开销增大的问题
+     * @param in 
+     * @param totalLengthToRead 传入大于0的值，如果小于或者等于0，则读取全部
+     * @return
+     * @throws IOException
+     */
+    public static String readIntoMemery(InputStream in,int totalLengthToRead){
+    	BufferedInputStream bis = new BufferedInputStream(in);
+    	//所有数据都写到内存中
+    	ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    	String returnString = "";
+    	int byteSize = 8 * 1024;
+    	byte[] b = new byte[byteSize];
+    	int totalReadLen = 0;
+    	int perLen=0;
+    	try{
+    		if(totalLengthToRead <= 0){//读取全部数据
+    			readAll(bis, b, bos);
+    			returnString = new String(bos.toByteArray(),UTF_8);
+    		}else{
+    			//读取totalLengthToRead长度数据
+        		if(totalLengthToRead <= byteSize){
+            		b = new byte[totalLengthToRead];
+            		perLen = bis.read(b);
+            		returnString = new String(b, UTF_8);
+            	}else{
+            		//b = new byte[byteSize];//默认值
+            		while((perLen = bis.read(b)) != -1){
+                		totalReadLen += perLen;
+                		int nextReadLength = needReadLength(totalReadLen, totalLengthToRead, byteSize);
+                		//处理本轮读取到的数据
+                		bos.write(b,0,perLen);
+                		//读取完毕，退出
+                		if(nextReadLength <= 0){
+                			break;
+                		}else{
+                			//剩下需要读取的长度，小于或者等于byteSize，都将长度设置成nextReadLength
+                    		if(nextReadLength < byteSize){
+                    			b = new byte[nextReadLength];
+                    		}
+                		}
+            		}
+            		returnString = new String(bos.toByteArray(),UTF_8);
+            	}
+        	}
+    	}catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			CloseUtil.closeIO(bos);
+			CloseUtil.closeIO(bis);
+			CloseUtil.closeIO(in);
+		}
+    	System.out.println("读取到内中的数据："+returnString);
+    	return returnString;
+    }
+    
+    public static ByteArrayOutputStream readAll(InputStream in, byte[] b, ByteArrayOutputStream bos) throws IOException{
+    	int len = 0;
+    	while((len = in.read(b)) != -1){
+    		bos.write(b,0,len);
+    	}
+    	return bos;
+    }
+    
+    private static int needReadLength(int totalReadLen, int totalLengthToRead, int byteSize){
+    	int remainLen = totalLengthToRead - totalReadLen;
+    	if(remainLen <= 0){
+    		return 0;
+    	}else{
+    		if(remainLen >=byteSize){
+        		return byteSize;
+        	}else{
+        		return remainLen;
+        	}	
+    	}
     }
 }
