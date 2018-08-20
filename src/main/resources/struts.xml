@@ -90,4 +90,23 @@
        
 	</package>
 	
+	<package namespace="/api/user" name="data-user" extends="json-default,struts-default">
+	
+		<action name="v1" class="com.farubaba.mobile.server.action.OkHttpAction" method="getUserList">
+        	<result name="success">/WEB-INF/jsp/okhttp.jsp</result>
+        </action>
+        
+	 	<action name="v2" class="com.farubaba.mobile.server.action.OkHttpAction" method="getUserListApi">
+        	<result name="json" type="json">
+        		<param name="root">users</param>  
+        	</result>
+        </action>
+        
+        <action name="v3" class="com.farubaba.mobile.server.action.OkHttpAction" method="getUserListStringApi">
+        	<result name="json" type="json">
+        		<param name="root">userListJsonString</param>  
+        	</result>
+        </action>
+	</package>
+	
 </struts>

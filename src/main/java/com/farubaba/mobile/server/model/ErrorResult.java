@@ -1,6 +1,6 @@
 package com.farubaba.mobile.server.model;
 
-public class ErrorResult {
+public class ErrorResult implements Result{
 	/**
 	 * 错误代码
 	 */

@@ -1,13 +1,21 @@
 package com.farubaba.mobile.server.model;
 
 public class Book {
+	private String id;
 	private String name;
 	private String author;
 	private String type;
 	private double price;
 	private String publisher;
 	private Double discutPrice; 
+	private String apiVersion;
 	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 	public String getName() {
 		return name;
 	}
@@ -44,7 +52,10 @@ public class Book {
 	public void setDiscutPrice(Double discutPrice) {
 		this.discutPrice = discutPrice;
 	}
-	
-	
-	
+	public String getApiVersion() {
+		return apiVersion;
+	}
+	public void setApiVersion(String apiVersion) {
+		this.apiVersion = apiVersion;
+	}
 }
