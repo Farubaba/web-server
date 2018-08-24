@@ -1,7 +1,7 @@
 package com.farubaba.mobile.server.service;
 
-import com.farubaba.mobile.server.base.json.JsonFactory;
-import com.farubaba.mobile.server.base.json.JsonService;
+import com.farubaba.mobile.base.json.JsonFactory;
+import com.farubaba.mobile.base.json.JsonService;
 import com.farubaba.mobile.server.dao.UserDao;
 import com.farubaba.mobile.server.dao.UserLoginDao;
 import com.farubaba.mobile.server.model.ErrorResult;

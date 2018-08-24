@@ -1,4 +1,4 @@
-package com.farubaba.mobile.server.util;
+package com.farubaba.mobile.base.util;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;

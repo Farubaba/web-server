@@ -17,7 +17,7 @@ import com.farubaba.mobile.server.model.Data;
 import com.farubaba.mobile.server.model.User;
 import com.farubaba.mobile.server.service.ConfigService;
 import com.farubaba.mobile.server.service.SysConfigService;
-import com.farubaba.mobile.server.util.ServerUtil;
+import com.farubaba.mobile.base.util.ServerUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;

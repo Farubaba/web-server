@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
 
-import com.farubaba.mobile.server.util.CloseUtil;
-import com.farubaba.mobile.server.util.IOUtil;
-import com.farubaba.mobile.server.util.ServerUtil;
+import com.farubaba.mobile.base.util.CloseUtil;
+import com.farubaba.mobile.base.util.IOUtil;
+import com.farubaba.mobile.base.util.ServerUtil;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class ReceiveAction extends ActionSupport {

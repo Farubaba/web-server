@@ -1,4 +1,4 @@
-package com.farubaba.mobile.server.base.json;
+package com.farubaba.mobile.base.json;
 /**
  * 常用的Java JSON 解析库有：
  * <code>

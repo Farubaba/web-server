@@ -107,6 +107,43 @@
         		<param name="root">userListJsonString</param>  
         	</result>
         </action>
+        
+        <action name="v4" class="com.farubaba.mobile.server.action.OkHttpAction" method="accessHeader">
+        	<result name="json" type="json">
+        		<param name="root">accessHeader</param>  
+        	</result>
+        </action>
+        <action name="post_plain_text" class="com.farubaba.mobile.server.action.OkHttpAction" method="postPlainText">
+        	<result name="json" type="json">
+        		<param name="root">accessHeader</param>  
+        	</result>
+        </action>
+        
+          <action name="post_stream" class="com.farubaba.mobile.server.action.OkHttpAction" method="postPStream">
+        	<result name="json" type="json">
+        		<param name="root"></param>  
+        	</result>
+        </action>
+        
+        
+        <action name="post_file" class="com.farubaba.mobile.server.action.OkHttpAction" method="postFile">
+        	<result name="json" type="json">
+        		<param name="root"></param>  
+        	</result>
+        	<result name="success">/HelloWorld.jsp</result>
+        </action>
+        
+        <action name="postform" class="com.farubaba.mobile.server.action.OkHttpAction" method="postForm">
+        	<result name="json" type="json">
+        		<param name="root">jsonString</param>  
+        	</result>
+        </action>
+        
+        <action name="post_multi_part" class="com.farubaba.mobile.server.action.OkHttpAction" method="postMultiPart">
+        	<result name="json" type="json">
+        		<param name="root">jsonString</param>  
+        	</result>
+        </action>
 	</package>
 	
 </struts>
