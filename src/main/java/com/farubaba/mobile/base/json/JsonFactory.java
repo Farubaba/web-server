@@ -23,7 +23,7 @@ public class JsonFactory {
 	 */
 	public static final int DEFAULT = GSON;
 	
-	public static JsonService getJsonService(){
+	public static JsonService<?> getJsonService(){
 		return getJsonService(DEFAULT);
 	}
 	
@@ -34,7 +34,7 @@ public class JsonFactory {
 	 * @param type
 	 * @return
 	 */
-	public static JsonService getJsonService(int type){
+	public static JsonService<?> getJsonService(int type){
 		switch(type){
 		case GSON:
 			return GsonService.getInstance();

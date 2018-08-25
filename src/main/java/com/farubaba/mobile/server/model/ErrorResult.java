@@ -1,6 +1,8 @@
 package com.farubaba.mobile.server.model;
 
-public class ErrorResult implements Result{
+import com.farubaba.mobile.base.http.protocol.IModel;
+
+public class ErrorResult implements IModel{
 	/**
 	 * 错误代码
 	 */

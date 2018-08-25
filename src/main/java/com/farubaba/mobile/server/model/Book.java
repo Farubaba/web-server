@@ -1,6 +1,8 @@
 package com.farubaba.mobile.server.model;
 
-public class Book {
+import com.farubaba.mobile.base.http.protocol.IModel;
+
+public class Book implements IModel{
 	private String id;
 	private String name;
 	private String author;

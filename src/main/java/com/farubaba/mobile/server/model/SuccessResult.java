@@ -1,6 +1,8 @@
 package com.farubaba.mobile.server.model;
 
-public class SuccessResult<T> implements Result {
+import com.farubaba.mobile.base.http.protocol.IModel;
+
+public class SuccessResult<T> implements IModel {
 	
 	private String apiVersion;
 	private T data;

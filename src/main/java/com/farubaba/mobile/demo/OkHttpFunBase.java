@@ -1,21 +1,17 @@
+
 package com.farubaba.mobile.demo;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import org.apache.commons.lang3.concurrent.ConcurrentUtils;
-
+import com.farubaba.mobile.base.util.ConcurrentUtil;
 import com.farubaba.mobile.server.action.OkHttpAction;
 import com.farubaba.mobile.server.model.User;
-import com.farubaba.mobile.base.util.ConcurrentUtil;
-import com.farubaba.mobile.base.util.GsonUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -111,7 +107,12 @@ public class OkHttpFunBase {
 				.url(API_CONTEXT + "api/user/v4")
 				.header("User-Agent", "webview")
 				.header("os", "android")
+				.header("os", "android")
 				.header("mac", "xxxx")
+				.addHeader("os", "ios")
+				.addHeader("os", "android")
+				.addHeader("os", "android")
+				
 				.build();
 		Call call = okHttpClient.newCall(request);
 		Response response;

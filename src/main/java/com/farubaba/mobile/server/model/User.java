@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class User {
+import com.farubaba.mobile.base.http.protocol.IModel;
+
+public class User implements IModel {
 
 	private String id;
 	private String username;

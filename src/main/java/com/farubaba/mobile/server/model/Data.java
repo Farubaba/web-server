@@ -1,10 +1,12 @@
 package com.farubaba.mobile.server.model;
 
+import com.farubaba.mobile.base.http.protocol.IModel;
+
 /**
  * @author violet
  * @date 2018/8/17 02:11
  */
-public class Data {
+public class Data implements IModel{
     private String type;
     private int level;
     private Double price;
