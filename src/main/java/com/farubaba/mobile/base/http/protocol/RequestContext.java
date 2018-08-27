@@ -37,7 +37,7 @@ public class RequestContext<M extends IModel> implements IRequestContext {
      */
     private Class<M> resultClass;
     private ErrorResultType errorResultType = ErrorResultType.ErrorResult;
-
+    
 	private int domainType;
     //scheme://host:port/
 	private String domain;
@@ -184,4 +184,5 @@ public class RequestContext<M extends IModel> implements IRequestContext {
 	public void setErrorResultType(ErrorResultType errorResultType) {
 		this.errorResultType = errorResultType;
 	}
+
 }

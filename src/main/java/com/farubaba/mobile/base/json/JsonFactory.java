@@ -17,6 +17,7 @@ public class JsonFactory {
 	public static final int GSON = 1;
 	public static final int FAST_JSON = 2;
 	public static final int JACKSON = 3;
+	public static final int MOSHI = 4;
 	/**
 	 * 默认采用GSON作为默认JSON解析器。其实，所有这些int参数都不应该写死在code里，
 	 * 应该在配置文件中定义并获取
@@ -42,6 +43,9 @@ public class JsonFactory {
 			//FIXME if you want replace GSON with FastJson, 
 			//you are also required to create FastJsonService.java like GsonService.java
 		case JACKSON:
+			//FIXME if you want replace GSON with Jackson
+			//you are also required to create JacksonService.java like GsonService.java
+		case MOSHI:
 			//FIXME if you want replace GSON with Jackson
 			//you are also required to create JacksonService.java like GsonService.java
 		default:

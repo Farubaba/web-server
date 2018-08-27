@@ -3,6 +3,8 @@ package com.farubaba.mobile.server.model;
 import com.farubaba.mobile.base.http.model.IModel;
 
 public class ErrorResult implements IModel{
+	
+	public static final int CODE_REQUEST_CANCEL = 9001;
 	/**
 	 * 错误代码
 	 */
@@ -26,19 +28,22 @@ public class ErrorResult implements IModel{
 	public int getCode() {
 		return code;
 	}
-	public void setCode(int code) {
+	public ErrorResult setCode(int code) {
 		this.code = code;
+		return this;
 	}
 	public String getMessage() {
 		return message;
 	}
-	public void setMessage(String message) {
+	public ErrorResult setMessage(String message) {
 		this.message = message;
+		return this;
 	}
 	public String getDisplay() {
 		return display;
 	}
-	public void setDisplay(String display) {
+	public ErrorResult setDisplay(String display) {
 		this.display = display;
+		return this;
 	}
 }

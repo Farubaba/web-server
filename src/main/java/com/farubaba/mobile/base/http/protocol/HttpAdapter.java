@@ -8,5 +8,5 @@ import com.farubaba.mobile.base.http.model.IModel;
  *
  */
 public interface HttpAdapter {
-	public <M extends IModel> void sendRequest(RequestContext<M> requestContext);
+	public <M extends IModel> RequestHandler sendRequest(RequestContext<M> requestContext);
 }

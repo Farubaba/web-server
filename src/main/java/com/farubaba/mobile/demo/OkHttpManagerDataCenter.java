@@ -11,6 +11,7 @@ import com.farubaba.mobile.base.http.HttpManager;
 import com.farubaba.mobile.base.http.OkHttpAdapter;
 import com.farubaba.mobile.base.http.protocol.IHttpCallback;
 import com.farubaba.mobile.base.http.protocol.RequestContext;
+import com.farubaba.mobile.base.http.protocol.RequestHandler;
 import com.farubaba.mobile.base.util.ConcurrentUtil;
 import com.farubaba.mobile.server.dao.ListUser;
 import com.farubaba.mobile.server.dao.ListUser2;
@@ -120,6 +121,7 @@ public class OkHttpManagerDataCenter {
 				
 			}
 		};
+		
 		RequestContext<ListUser2> requestContext = new RequestContext<ListUser2>()
 				//.setDomain(domain)
 				.setUrl(String.format(fullUrl, "valueOfName11","valueOfName22"))
@@ -127,7 +129,9 @@ public class OkHttpManagerDataCenter {
 				.setCallback(callback)
 				.setResultClass(ListUser2.class);
 		
-		httpManager.sendRequest(requestContext);
+		RequestHandler handler = httpManager.sendRequest(requestContext);
+		//you can cancel request like below:
+		handler.cancelRequest();
 		try {
 			countDownLatch.await();
 		} catch (InterruptedException e) {

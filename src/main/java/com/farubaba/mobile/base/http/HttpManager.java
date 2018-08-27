@@ -3,6 +3,7 @@ package com.farubaba.mobile.base.http;
 import com.farubaba.mobile.base.http.model.IModel;
 import com.farubaba.mobile.base.http.protocol.HttpAdapter;
 import com.farubaba.mobile.base.http.protocol.RequestContext;
+import com.farubaba.mobile.base.http.protocol.RequestHandler;
 
 /**
  * 单例HttpDataCenter，可以通过设置不同的HTTPClient来实现不同的http控制；
@@ -34,8 +35,9 @@ public class HttpManager implements HttpAdapter{
 	}
 
 	@Override
-	public <M extends IModel> void sendRequest(
+	public <M extends IModel> RequestHandler sendRequest(
 			RequestContext<M> requestContext) {
-		getHttpAdapter().sendRequest(requestContext);
+		return getHttpAdapter().sendRequest(requestContext);
 	}
+
 }

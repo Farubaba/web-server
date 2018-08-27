@@ -13,6 +13,7 @@ import com.farubaba.mobile.base.http.protocol.HttpAdapter;
 import com.farubaba.mobile.base.http.protocol.HttpMethod;
 import com.farubaba.mobile.base.http.protocol.IHttpCallback;
 import com.farubaba.mobile.base.http.protocol.RequestContext;
+import com.farubaba.mobile.base.http.protocol.RequestHandler;
 import com.farubaba.mobile.base.json.JsonFactory;
 import com.farubaba.mobile.base.json.JsonService;
 import com.farubaba.mobile.base.util.ConcurrentUtil;
@@ -23,6 +24,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Request.Builder;
 import okhttp3.Response;
 
@@ -58,14 +60,14 @@ public class OkHttpAdapter implements HttpAdapter{
 		addHeaders(requestContext, requestBuilder);
 		HttpMethod method = requestContext.getMethod();
 		switch(method){
-			case GET:
+			case GET: //完全方法
 				return prepareGet(requestContext,requestBuilder);
+			case HEAD: //安全方法
+				return prepareHead(requestContext,requestBuilder);
 			case POST:
 				return preparePost(requestContext,requestBuilder);
 			case PUT:
 				return preparePut(requestContext,requestBuilder);
-			case HEAD:
-				return prepareHead(requestContext,requestBuilder);
 			case DELETE:
 				return prepareDelete(requestContext,requestBuilder);
 			case CONNECT:
@@ -156,7 +158,7 @@ public class OkHttpAdapter implements HttpAdapter{
 	}
 
 	@Override
-	public <M extends IModel>void sendRequest(RequestContext<M> requestContext) {
+	public <M extends IModel> RequestHandler sendRequest(RequestContext<M> requestContext) {
 		Request request = prepareRequestBuilder(requestContext).build();
 		Call call = okHttpClient.newCall(request);
 		call.enqueue(new Callback() {
@@ -173,7 +175,7 @@ public class OkHttpAdapter implements HttpAdapter{
 					}catch (Exception e) {
 						e.printStackTrace();
 						//FIXME 不同的Exception可以用来区分不用的错误逻辑，不如：认证失败，协议错误，等
-						IOException ioe = new IOException();
+						IOException ioe = new IOException(e);
 						onFailure(call, ioe);
 					}
 				}
@@ -183,11 +185,25 @@ public class OkHttpAdapter implements HttpAdapter{
 			public void onFailure(Call call, IOException e) {
 				//FIXME 这里可以根据实际中需要，不断完善错误类型。
 				IHttpCallback<M> callback = requestContext.getCallback();
+				ErrorResult errorResult = new ErrorResult(-1, "根据实际需要，扩充错误类型,例如：json语法错误，authority错误，SSL证书错误等等", "其他错误，不特殊处理");
 				if(callback != null){
-					requestContext.getCallback().onFailure(new ErrorResult(111, "根据实际需要，扩充错误类型", "例如：json语法错误，authority错误，SSL证书错误等等"));	
+					if(call.isCanceled()){
+						errorResult.setCode(ErrorResult.CODE_REQUEST_CANCEL)
+						.setMessage("客户端取消了request")
+						.setDisplay("无特殊处理");
+					}
+					callback.onFailure(errorResult);	
 				}
 			}
 			
 		});
+		
+		RequestHandler requestHandler = new RequestHandler() {
+			@Override
+			public void cancelRequest() {
+				call.cancel();
+			}
+		};
+		return requestHandler;
 	}
 }
