@@ -1,5 +1,9 @@
 package com.farubaba.mobile.base.http.protocol;
 
-public interface IHttpCallback {
+import com.farubaba.mobile.base.http.model.IModel;
+import com.farubaba.mobile.server.model.ErrorResult;
 
+public interface IHttpCallback<M extends IModel> {
+	public void onSuccess(M result);
+	public void onFailure(ErrorResult result);
 }

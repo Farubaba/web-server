@@ -1,6 +1,8 @@
 package com.farubaba.mobile.base.http;
 
+import com.farubaba.mobile.base.http.model.IModel;
 import com.farubaba.mobile.base.http.protocol.HttpClient;
+import com.farubaba.mobile.base.http.protocol.RequestContext;
 
 /**
  * 单例HttpDataCenter，可以通过设置不同的HTTPClient来实现不同的http控制；
@@ -8,7 +10,7 @@ import com.farubaba.mobile.base.http.protocol.HttpClient;
  * @author violet
  *
  */
-public class HttpDataCenter {
+public class HttpDataCenter implements HttpClient{
 	
 	private static HttpDataCenter instance = new HttpDataCenter();
 	private HttpClient httpClient;
@@ -22,7 +24,7 @@ public class HttpDataCenter {
 	
 	public HttpDataCenter setHttpClient(HttpClient httpClient){
 		if(httpClient == null){
-			this.httpClient = new OkHttpClientImpl();
+			this.httpClient = new OkHttpManager();
 		}else{
 			this.httpClient = httpClient;
 		}
@@ -31,5 +33,11 @@ public class HttpDataCenter {
 	
 	public HttpClient getHttpClient(){
 		return this.httpClient;
+	}
+
+	@Override
+	public <SUCESS extends IModel> void sendRequest(
+			RequestContext<SUCESS> requestContext) {
+		this.httpClient.sendRequest(requestContext);
 	}
 }

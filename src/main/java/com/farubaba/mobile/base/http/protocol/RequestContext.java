@@ -1,8 +1,12 @@
 package com.farubaba.mobile.base.http.protocol;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.farubaba.mobile.base.http.UrlUtil;
+import com.farubaba.mobile.base.http.model.ErrorResultType;
+import com.farubaba.mobile.base.http.model.IModel;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 
@@ -25,12 +29,21 @@ import com.google.common.collect.MultimapBuilder;
  * @author violet
  *
  */
-public class RequestContext implements IRequestContext {
+public class RequestContext<M extends IModel> implements IRequestContext {
 	public static final String CHARSET = "utf-8";
 	public static final String PROTOCOL_CONTENT_TYPE_JSON = String.format("application/json; charset=%s", CHARSET);
     public static String PROTOCOL_CONTENT_TYPE_X_WWW_FORM_URLENCODED = String.format("application/x-www-form-urlencoded; charset=%s", CHARSET);
-    
-	public String host;
+    /**
+     * 需要将jsonString 转化的目标java类型
+     */
+    public Class<M> targetClass;
+    public ErrorResultType errorResultType = ErrorResultType.ErrorResult;
+
+	public int domainType;
+    //scheme://host:port/
+	public String domain;
+	//user/api/v3?username=xxx#node
+	//完整的URL = domain+pathQuery+key value parameters
 	public String url;
 	public HttpMethod method = HttpMethod.GET;
 	/**
@@ -51,51 +64,123 @@ public class RequestContext implements IRequestContext {
 	//MultiPart
 	//stream
 	//callback
+	public IHttpCallback<M> callback;
 	//response code
 	//response header
 	//response body
-	public String getHost() {
-		return host;
-	}
 	
-	public RequestContext setHost(String host) {
-		this.host = host;
+	public String getDomain() {
+		if(this.domain == null || !UrlUtil.isAbsolutedPath(this.domain)){
+			this.domain = DomainFactory.getDomain(domainType);	
+		}
+		if(!this.domain.endsWith(UrlUtil.PATH_SEPERATOR)){
+			this.domain = this.domain + UrlUtil.PATH_SEPERATOR;
+		}
+		if(this.domain == null){
+			this.domain = UrlUtil.EMPTY_STRING;
+		}
+		return this.domain;
+	}
+
+	public RequestContext<M> setDomain(String domain) {
+		this.domain = domain;
 		return this;
 	}
+	
 	public String getUrl() {
+		if(!UrlUtil.isAbsolutedPath(url)){
+			//FIXME 拼接domain+path+query
+			//第一种方式：动态循环拼接
+			//第二种方式：String.format(url,String... param)
+			this.url = getDomain() + UrlUtil.adjustUrl(url);
+		}
+		//Get请求参数append
+		this.url = appendGetUrlParameters(url);
 		return url;
 	}
-	public RequestContext setUrl(String url) {
+	
+	
+	/**
+	 * Get请求参数append to url
+	 * @param url
+	 * @return
+	 */
+	private String appendGetUrlParameters(String url){
+		if(HttpMethod.GET.equals(getMethod()) && getQuerys() != null && !getQuerys().isEmpty()){
+			url = UrlUtil.appendUrlWithParams(url, getQuerys());
+		}
+		return url;
+	}
+
+	public RequestContext<M> setUrl(String url) {
 		this.url = url;
 		return this;
 	}
 	public HttpMethod getMethod() {
 		return method;
 	}
-	public RequestContext setMethod(HttpMethod method) {
+	public RequestContext<M> setMethod(HttpMethod method) {
 		this.method = method;
 		return this;
 	}
 	public Map<String, String> getHeader() {
 		return header;
 	}
-	public RequestContext setHeader(Map<String, String> header) {
+	public RequestContext<M> setHeader(Map<String, String> header) {
 		this.header = header;
 		return this;
 	}
 	public ListMultimap<String, String> getHeaders() {
 		return headers;
 	}
-	public RequestContext setHeaders(ListMultimap<String, String> headers) {
+	public RequestContext<M> setHeaders(ListMultimap<String, String> headers) {
 		this.headers = headers;
 		return this;
 	}
 	public Map<String, String> getQuerys() {
 		return querys;
 	}
-	public RequestContext setQuerys(Map<String, String> querys) {
+	public RequestContext<M> setQuerys(Map<String, String> querys) {
 		this.querys = querys;
 		return this;
 	}
+
+	public int getDomainType() {
+		return domainType;
+	}
+
+	public RequestContext<M> setDomainType(int domainType) {
+		this.domainType = domainType;
+		return this;
+	}
 	
+	public Class<M> getTargetClass() {
+			return targetClass;
+	}
+
+	public RequestContext<M> setTargetClass(Class<M> targetClass) {
+		this.targetClass = targetClass;
+		return this;
+	}
+
+	public IHttpCallback<M> getCallback() {
+		return callback;
+	}
+
+	public RequestContext<M> setCallback(IHttpCallback<M> callback) {
+		this.callback = callback;
+		if(this.callback == null){
+			// FIXME 
+			//throw exception or print error log.
+		}
+		return this;
+	}
+
+	public ErrorResultType getErrorResultType() {
+		return errorResultType;
+	}
+
+	public void setErrorResultType(ErrorResultType errorResultType) {
+		this.errorResultType = errorResultType;
+	}
 }

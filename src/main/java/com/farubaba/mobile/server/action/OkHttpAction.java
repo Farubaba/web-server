@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 
 import com.farubaba.mobile.base.util.IOUtil;
+import com.farubaba.mobile.demo.UserListData;
 import com.farubaba.mobile.server.model.User;
 import com.farubaba.mobile.server.service.DataService;
 import com.farubaba.mobile.server.service.DataServiceImpl;
@@ -30,6 +32,7 @@ public class OkHttpAction extends ActionSupport {
 	private String userListJsonString;
 	private ListMultimap<String,String> headerMap = MultimapBuilder.hashKeys().arrayListValues().build();
 	private String jsonString;
+	private UserListData userListData = new UserListData();
 	
 	@Action("v1")
 	public String getUserList(){
@@ -47,9 +50,21 @@ public class OkHttpAction extends ActionSupport {
 	public String getUserListApi(){
 		Method method;
 		try {
+			HttpServletRequest request = ServletActionContext.getRequest();
+			//Enumeration<String> names = request.getAttributeNames();
+			
+			//{name=[valueOfName1, valueOfName2, namevalue-from-map], pwd=123}
+//			Map<String,String[]> params = request.getParameterMap();
+//			String[] nameValues = params.get("name");
+//			System.out.println(params);
+//			for(String v : nameValues){
+//				System.out.println("name "+ " = "+ v);
+//			}
+		
 			method = this.getClass().getMethod(Thread.currentThread().getStackTrace()[1].getMethodName());
 			String apiVersion = method.getAnnotation(Action.class).value();
 			users = dataService.getUsers(apiVersion); 
+			
 		} catch (NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 		}
@@ -144,6 +159,7 @@ public class OkHttpAction extends ActionSupport {
 		return SUCCESS;
 	}
 	
+
 	//@Action("post_form")
 	public String postForm(){
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -160,6 +176,24 @@ public class OkHttpAction extends ActionSupport {
 		jsonString = sb.toString();
 		return "json";
 	}
+	
+	@Action("getUsersApi")
+	public String getUsersApi(){
+		Method method;
+		try {
+			HttpServletRequest request = ServletActionContext.getRequest();
+			method = this.getClass().getMethod(Thread.currentThread().getStackTrace()[1].getMethodName());
+			String apiVersion = method.getAnnotation(Action.class).value();
+			userListData.setData(dataService.getUsers(apiVersion)); 
+			userListData.setSuccess(true);
+			userListData.setSuc(true);
+		} catch (NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+		}
+		return "json";
+	}
+	
+	
 	public List<User> getUsers() {
 		return users;
 	}
@@ -183,7 +217,12 @@ public class OkHttpAction extends ActionSupport {
 	public void setJsonString(String jsonString) {
 		this.jsonString = jsonString;
 	}
+
+	public void setUserListData(UserListData userListData) {
+		this.userListData = userListData;
+	}
 	
-	
-	
+	public UserListData getUserListData() {
+		return userListData;
+	}
 }

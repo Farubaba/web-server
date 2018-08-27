@@ -1,6 +1,6 @@
 package com.farubaba.mobile.server.model;
 
-import com.farubaba.mobile.base.http.protocol.IModel;
+import com.farubaba.mobile.base.http.model.IModel;
 
 /**
  * @author violet

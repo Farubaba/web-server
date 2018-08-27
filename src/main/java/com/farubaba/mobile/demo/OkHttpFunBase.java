@@ -37,6 +37,7 @@ public class OkHttpFunBase {
 	public static final String API_CONTEXT= "http://127.0.0.1:8080/mobile-server/";
 	public static final Gson gson = new GsonBuilder().create();
 	OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+			//设置代理，让Charles拦截请求
 			.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8888)))
 			.build();
 	/**
