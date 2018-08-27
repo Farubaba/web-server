@@ -7,6 +7,6 @@ import com.farubaba.mobile.base.http.model.IModel;
  * @author violet
  *
  */
-public interface HttpClient {
-	public <SUCESS extends IModel>void sendRequest(RequestContext<SUCESS> requestContext);
+public interface HttpAdapter {
+	public <M extends IModel> void sendRequest(RequestContext<M> requestContext);
 }

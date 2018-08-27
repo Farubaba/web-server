@@ -1,6 +1,5 @@
 package com.farubaba.mobile.base.http.protocol;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,35 +35,35 @@ public class RequestContext<M extends IModel> implements IRequestContext {
     /**
      * 需要将jsonString 转化的目标java类型
      */
-    public Class<M> targetClass;
-    public ErrorResultType errorResultType = ErrorResultType.ErrorResult;
+    private Class<M> resultClass;
+    private ErrorResultType errorResultType = ErrorResultType.ErrorResult;
 
-	public int domainType;
+	private int domainType;
     //scheme://host:port/
-	public String domain;
+	private String domain;
 	//user/api/v3?username=xxx#node
 	//完整的URL = domain+pathQuery+key value parameters
-	public String url;
-	public HttpMethod method = HttpMethod.GET;
+	private String url;
+	private HttpMethod method = HttpMethod.GET;
 	/**
 	 * request header
 	 * 该集合一个key只能对应一个value
 	 */
-	public Map<String,String> header = new HashMap<String, String>();
+	private Map<String,String> header = new HashMap<String, String>();
 	/**
 	 * request headers
 	 * 该集合一个key可以对应多个value
 	 */
-	public ListMultimap<String,String> headers = MultimapBuilder.hashKeys().arrayListValues().build();
+	private ListMultimap<String,String> headers = MultimapBuilder.hashKeys().arrayListValues().build();
 	/**
 	 * request query parameters
 	 */
-	public Map<String,String> querys = new HashMap<String, String>();
+	private Map<String,String> querys = new HashMap<String, String>();
 	//request body
 	//MultiPart
 	//stream
 	//callback
-	public IHttpCallback<M> callback;
+	private  IHttpCallback<M> callback;
 	//response code
 	//response header
 	//response body
@@ -111,6 +110,8 @@ public class RequestContext<M extends IModel> implements IRequestContext {
 		}
 		return url;
 	}
+	
+	
 
 	public RequestContext<M> setUrl(String url) {
 		this.url = url;
@@ -144,6 +145,15 @@ public class RequestContext<M extends IModel> implements IRequestContext {
 		this.querys = querys;
 		return this;
 	}
+	
+	public Class<M> getResultClass() {
+		return resultClass;
+	}
+
+	public RequestContext<M> setResultClass(Class<M> resultClass) {
+		this.resultClass = resultClass;
+		return this;
+	}
 
 	public int getDomainType() {
 		return domainType;
@@ -154,15 +164,6 @@ public class RequestContext<M extends IModel> implements IRequestContext {
 		return this;
 	}
 	
-	public Class<M> getTargetClass() {
-			return targetClass;
-	}
-
-	public RequestContext<M> setTargetClass(Class<M> targetClass) {
-		this.targetClass = targetClass;
-		return this;
-	}
-
 	public IHttpCallback<M> getCallback() {
 		return callback;
 	}

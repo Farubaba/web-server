@@ -8,11 +8,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
-import com.farubaba.mobile.base.http.model.ErrorResultType;
-import com.farubaba.mobile.base.http.model.ErrorDetectModel;
 import com.farubaba.mobile.base.http.model.IModel;
-import com.farubaba.mobile.base.http.protocol.HttpClient;
+import com.farubaba.mobile.base.http.protocol.HttpAdapter;
 import com.farubaba.mobile.base.http.protocol.HttpMethod;
+import com.farubaba.mobile.base.http.protocol.IHttpCallback;
 import com.farubaba.mobile.base.http.protocol.RequestContext;
 import com.farubaba.mobile.base.json.JsonFactory;
 import com.farubaba.mobile.base.json.JsonService;
@@ -34,7 +33,7 @@ import okhttp3.Response;
  * @author violet
  *
  */
-public class OkHttpManager implements HttpClient{
+public class OkHttpAdapter implements HttpAdapter{
 	
 	private OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient().newBuilder();
 	
@@ -48,7 +47,7 @@ public class OkHttpManager implements HttpClient{
 		return okHttpClient;
 	}
 
-	public OkHttpManager setOkHttpClient(OkHttpClient okHttpClient) {
+	public OkHttpAdapter setOkHttpClient(OkHttpClient okHttpClient) {
 		this.okHttpClient = okHttpClient;
 		return this;
 	}
@@ -82,11 +81,6 @@ public class OkHttpManager implements HttpClient{
 	}
 	
 	private <M extends IModel> Builder prepareGet(RequestContext<M> requestContext, Builder requestBuilder) {
-//		Map<String,String> queryMap = requestContext.getQuerys();
-//		String url = requestContext.getUrl();
-//		if(queryMap != null && queryMap.size() > 0){
-//			url = UrlUtil.appendUrlWithParams(url, queryMap);
-//		}
 		requestBuilder.url(requestContext.getUrl());	
 		return requestBuilder;
 	}
@@ -135,7 +129,7 @@ public class OkHttpManager implements HttpClient{
 	 * @param requestBuilder
 	 */
 	private <M extends IModel> void addHeaders(RequestContext<M> requestContext, Request.Builder requestBuilder) {
-		ListMultimap<String, String> multiHeaders = requestContext.headers;
+		ListMultimap<String, String> multiHeaders = requestContext.getHeaders();
 		Set<String> multiHeaderKeys = multiHeaders.keySet();
 		for(String key : multiHeaderKeys){
 			List<String> headerValueList = multiHeaders.get(key);
@@ -143,7 +137,6 @@ public class OkHttpManager implements HttpClient{
 				requestBuilder.addHeader(key, value);
 			}
 		}
-		
 	}
 
 	/**
@@ -163,21 +156,9 @@ public class OkHttpManager implements HttpClient{
 	}
 
 	@Override
-	public <M extends IModel> void sendRequest(RequestContext<M> requestContext) {
+	public <M extends IModel>void sendRequest(RequestContext<M> requestContext) {
 		Request request = prepareRequestBuilder(requestContext).build();
 		Call call = okHttpClient.newCall(request);
-		asyncGet(request, call, requestContext);
-//		try {
-//			Response response = call.execute();
-//			String value = response.body().string();
-//			System.out.println("OKHttpManager sendRequest, return value = "+ value);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-	}
-	
-	private <M extends IModel> void asyncGet(Request request, Call call, RequestContext<M> requestContext){
-		final CountDownLatch countDownLatch = ConcurrentUtil.newSingleStepCountDownLatch();
 		call.enqueue(new Callback() {
 			@Override
 			public void onResponse(Call call, Response response) throws IOException {
@@ -185,29 +166,28 @@ public class OkHttpManager implements HttpClient{
 					try{
 						String jsonString = response.body().string();
 						System.out.println("jsonString = "+ jsonString);
-						requestContext.getCallback().onSuccess(jsonService.fromJson(jsonString, requestContext.targetClass));
+						IHttpCallback<M> callback = requestContext.getCallback();
+						if(callback != null){
+							callback.onSuccess(jsonService.fromJson(jsonString, requestContext.getResultClass()));	
+						}
 					}catch (Exception e) {
 						e.printStackTrace();
-					}finally{
-						countDownLatch.countDown();
+						//FIXME 不同的Exception可以用来区分不用的错误逻辑，不如：认证失败，协议错误，等
+						IOException ioe = new IOException();
+						onFailure(call, ioe);
 					}
 				}
-				
 			}
 			
 			@Override
 			public void onFailure(Call call, IOException e) {
-					requestContext.callback.onFailure(new ErrorResult(111, "aameage", "bb display"));
-					countDownLatch.countDown();
+				//FIXME 这里可以根据实际中需要，不断完善错误类型。
+				IHttpCallback<M> callback = requestContext.getCallback();
+				if(callback != null){
+					requestContext.getCallback().onFailure(new ErrorResult(111, "根据实际需要，扩充错误类型", "例如：json语法错误，authority错误，SSL证书错误等等"));	
+				}
 			}
 			
 		});
-		try {
-			countDownLatch.await();
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 	}
-
 }
