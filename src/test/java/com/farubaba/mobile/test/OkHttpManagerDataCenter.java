@@ -12,7 +12,7 @@ import com.farubaba.mobile.base.http.OkHttpAdapter;
 import com.farubaba.mobile.base.http.body.StringRequestBody;
 import com.farubaba.mobile.base.http.model.ObjectErrorModel;
 import com.farubaba.mobile.base.http.protocol.HttpMethod;
-import com.farubaba.mobile.base.http.protocol.IHttpCallback;
+import com.farubaba.mobile.base.http.protocol.IModelResultCallback;
 import com.farubaba.mobile.base.http.protocol.MimeType;
 import com.farubaba.mobile.base.http.protocol.RequestContext;
 import com.farubaba.mobile.base.http.protocol.RequestHandler;
@@ -82,7 +82,7 @@ public class OkHttpManagerDataCenter {
 		querys.put("name", "namevalue-from-map2-asyc");
 		querys.put("pwd", "123456");
 		
-		IHttpCallback<ListUser2> callback = new IHttpCallback<ListUser2>() {
+		IModelResultCallback<ListUser2> callback = new IModelResultCallback<ListUser2>() {
 			@Override
 			public void onSuccess(ListUser2 result) {
 					String name = result.getData().get(0).getUsername();
@@ -120,7 +120,7 @@ public class OkHttpManagerDataCenter {
 		querys.put("pwd", "1234567890");
 		
 		final CountDownLatch countDownLatch = ConcurrentUtil.newSingleStepCountDownLatch();
-		IHttpCallback<ListUser2> callback = new IHttpCallback<ListUser2>() {
+		IModelResultCallback<ListUser2> callback = new IModelResultCallback<ListUser2>() {
 			@Override
 			public void onSuccess(ListUser2 result) {
 					String name = result.getData().get(0).getUsername();
@@ -168,7 +168,7 @@ public class OkHttpManagerDataCenter {
 						.setMimeType(MimeType.TEXT_X_MARKDOWN)
 						.setBodyContent(bodyContent))
 				.setResultClass(ObjectErrorModel.class)
-				.setCallback(new IHttpCallback<ObjectErrorModel>() {
+				.setCallback(new IModelResultCallback<ObjectErrorModel>() {
 					@Override
 					public void onSuccess(ObjectErrorModel result) {
 						System.out.println("正确返回 : result.display = " + result.getDisplay() );

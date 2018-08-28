@@ -18,7 +18,7 @@ import com.farubaba.mobile.base.http.body.StringRequestBody;
 import com.farubaba.mobile.base.http.model.IModel;
 import com.farubaba.mobile.base.http.protocol.HttpAdapter;
 import com.farubaba.mobile.base.http.protocol.HttpMethod;
-import com.farubaba.mobile.base.http.protocol.IHttpCallback;
+import com.farubaba.mobile.base.http.protocol.IModelResultCallback;
 import com.farubaba.mobile.base.http.protocol.RequestContext;
 import com.farubaba.mobile.base.http.protocol.RequestHandler;
 import com.farubaba.mobile.base.json.JsonFactory;
@@ -135,12 +135,13 @@ public class OkHttpAdapter implements HttpAdapter{
 	private RequestBody prepareMultipartBody(MultipartRequestBody content) {
 		RequestBody body = null;
 		MultipartBody.Builder builder = new MultipartBody.Builder();
+		//FIXME 多个不同的part应该使用哪一个mimeType
+		//builder.setType(type);
 		if(content != null){
 			List<Body> bodyList = content.getBodyList();
 			List<FileRequestBody> fileBodyList = content.getFileBodyList();
 			Map<String,String> formKeyValues = content.getFormKeyValues();
 			List<HeaderedBody> headersBodyList = content.getHeadersBodyList();
-			
 			addFormDataKeyValueParts(builder,formKeyValues);
 			addFormDataFileParts(builder, fileBodyList);
 			addBodyParts(builder, bodyList);
@@ -280,7 +281,7 @@ public class OkHttpAdapter implements HttpAdapter{
 					try{
 						String jsonString = response.body().string();
 						System.out.println("jsonString = "+ jsonString);
-						IHttpCallback<M> callback = requestContext.getCallback();
+						IModelResultCallback<M> callback = requestContext.getCallback();
 						if(callback != null){
 							callback.onSuccess(jsonService.fromJson(jsonString, requestContext.getResultClass()));	
 						}
@@ -296,7 +297,7 @@ public class OkHttpAdapter implements HttpAdapter{
 			@Override
 			public void onFailure(Call call, IOException e) {
 				//FIXME 这里可以根据实际中需要，不断完善错误类型。
-				IHttpCallback<M> callback = requestContext.getCallback();
+				IModelResultCallback<M> callback = requestContext.getCallback();
 				ErrorResult errorResult = new ErrorResult(-1, "根据实际需要，扩充错误类型,例如：json语法错误，authority错误，SSL证书错误等等", "其他错误，不特殊处理");
 				if(callback != null){
 					if(call.isCanceled()){

@@ -65,7 +65,7 @@ public class RequestContext<M extends IModel> implements IRequestContext {
 	//MultiPart
 	//stream
 	//callback
-	private  IHttpCallback<M> callback;
+	private  IModelResultCallback<M> callback;
 	//response code
 	//response header
 	//response body
@@ -166,11 +166,11 @@ public class RequestContext<M extends IModel> implements IRequestContext {
 		return this;
 	}
 	
-	public IHttpCallback<M> getCallback() {
+	public IModelResultCallback<M> getCallback() {
 		return callback;
 	}
 
-	public RequestContext<M> setCallback(IHttpCallback<M> callback) {
+	public RequestContext<M> setCallback(IModelResultCallback<M> callback) {
 		this.callback = callback;
 		if(this.callback == null){
 			// FIXME 
