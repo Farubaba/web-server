@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.farubaba.mobile.base.http.UrlUtil;
+import com.farubaba.mobile.base.http.body.Body;
 import com.farubaba.mobile.base.http.model.ErrorResultType;
 import com.farubaba.mobile.base.http.model.IModel;
 import com.google.common.collect.ListMultimap;
@@ -60,6 +61,7 @@ public class RequestContext<M extends IModel> implements IRequestContext {
 	 */
 	private Map<String,String> querys = new HashMap<String, String>();
 	//request body
+	private Body requestBody;
 	//MultiPart
 	//stream
 	//callback
@@ -181,8 +183,18 @@ public class RequestContext<M extends IModel> implements IRequestContext {
 		return errorResultType;
 	}
 
-	public void setErrorResultType(ErrorResultType errorResultType) {
+	public RequestContext<M> setErrorResultType(ErrorResultType errorResultType) {
 		this.errorResultType = errorResultType;
+		return this;
+	}
+
+	public Body getRequestBody() {
+		return requestBody;
+	}
+
+	public RequestContext<M> setRequestBody(Body requestBody) {
+		this.requestBody = requestBody;
+		return this;
 	}
 
 }

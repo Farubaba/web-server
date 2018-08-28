@@ -1,13 +1,20 @@
 package com.farubaba.mobile.base.http;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 
+import com.farubaba.mobile.base.http.body.Body;
+import com.farubaba.mobile.base.http.body.FileRequestBody;
+import com.farubaba.mobile.base.http.body.FormRequestBody;
+import com.farubaba.mobile.base.http.body.HeaderedBody;
+import com.farubaba.mobile.base.http.body.MultipartRequestBody;
+import com.farubaba.mobile.base.http.body.StreamRequestBody;
+import com.farubaba.mobile.base.http.body.StringRequestBody;
 import com.farubaba.mobile.base.http.model.IModel;
 import com.farubaba.mobile.base.http.protocol.HttpAdapter;
 import com.farubaba.mobile.base.http.protocol.HttpMethod;
@@ -16,17 +23,24 @@ import com.farubaba.mobile.base.http.protocol.RequestContext;
 import com.farubaba.mobile.base.http.protocol.RequestHandler;
 import com.farubaba.mobile.base.json.JsonFactory;
 import com.farubaba.mobile.base.json.JsonService;
-import com.farubaba.mobile.base.util.ConcurrentUtil;
+import com.farubaba.mobile.base.util.CloseUtil;
+import com.farubaba.mobile.base.util.IOUtil;
 import com.farubaba.mobile.server.model.ErrorResult;
 import com.google.common.collect.ListMultimap;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.Headers;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.MultipartBody.Part;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Request.Builder;
+import okhttp3.RequestBody;
 import okhttp3.Response;
+import okio.BufferedSink;
 
 /**
  * http默认实现是使用okhttp，如果需要更换实现，这仿造该类建立新的实现，设置给httpDataCenter即可。
@@ -58,72 +72,170 @@ public class OkHttpAdapter implements HttpAdapter{
 		Request.Builder requestBuilder = new Request.Builder();
 		setHeader(requestContext, requestBuilder);
 		addHeaders(requestContext, requestBuilder);
+		requestBuilder.url(requestContext.getUrl());
+		RequestBody body = prepareRequestBodyIfNeed(requestContext, requestBuilder);
 		HttpMethod method = requestContext.getMethod();
 		switch(method){
 			case GET: //完全方法
-				return prepareGet(requestContext,requestBuilder);
+				return requestBuilder.get();
 			case HEAD: //安全方法
-				return prepareHead(requestContext,requestBuilder);
+				return requestBuilder.head();
 			case POST:
-				return preparePost(requestContext,requestBuilder);
+				return requestBuilder.post(body);
 			case PUT:
-				return preparePut(requestContext,requestBuilder);
+				return requestBuilder.put(body);
 			case DELETE:
-				return prepareDelete(requestContext,requestBuilder);
+				return requestBuilder.delete(body);
+			case PATCH:
+				return requestBuilder.patch(body);
 			case CONNECT:
-				return prepareConnect(requestContext,requestBuilder);
 			case TRACE:
-				return prepareTrace(requestContext,requestBuilder);
 			case OPTIONS:
-				return prepareOptions(requestContext,requestBuilder);
 			default:
-				return prepareGet(requestContext,requestBuilder);
+				return requestBuilder.get();
 			
 		}
 	}
 	
-	private <M extends IModel> Builder prepareGet(RequestContext<M> requestContext, Builder requestBuilder) {
-		requestBuilder.url(requestContext.getUrl());	
-		return requestBuilder;
+	private <M extends IModel> RequestBody prepareRequestBodyIfNeed(RequestContext<M> requestContext, Builder requestBuilder) {
+		Body body = requestContext.getRequestBody();
+		RequestBody requestBody = convertToRequestBody(body);
+		return requestBody;
 	}
-
-
-	private <M extends IModel> Builder preparePost(RequestContext<M> requestContext, Builder requestBuilder) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private <M extends IModel> Builder preparePut(RequestContext<M> requestContext, Builder requestBuilder) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private <M extends IModel> Builder prepareHead(RequestContext<M> requestContext, Builder requestBuilder) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private <M extends IModel>  Builder prepareDelete(RequestContext<M> requestContext, Builder requestBuilder) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private <M extends IModel> Builder prepareConnect(RequestContext<M> requestContext, Builder requestBuilder) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private <M extends IModel>  Builder prepareTrace(RequestContext<M> requestContext, Builder requestBuilder) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private <M extends IModel>  Builder prepareOptions(RequestContext<M> requestContext, Builder requestBuilder) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	
+	/**
+	 * 这里提供了目前支持的RequestBody类型，如果需要添加其他类型，扩展这里即可。
+	 * 
+	 * @param body
+	 * @return
+	 */
+	private RequestBody convertToRequestBody(Body body){
+		RequestBody requestBody = null;
+		if(body != null){
+			if(body instanceof StringRequestBody){
+				StringRequestBody content = (StringRequestBody)body;
+				requestBody = prepareStringBody(content);
+			}else if(body instanceof StreamRequestBody){
+				StreamRequestBody content = (StreamRequestBody)body;
+				requestBody = prepareStreamBody(content);
+			}else if(body instanceof FileRequestBody){
+				FileRequestBody content = (FileRequestBody) body;
+				requestBody = prepareFileBody(content);
+			}else if(body instanceof FormRequestBody){
+				FormRequestBody content = (FormRequestBody) body;
+				requestBody = prepareFormBody(content);
+			}else if(body instanceof MultipartRequestBody){
+				MultipartRequestBody content =  (MultipartRequestBody) body;
+				requestBody = prepareMultipartBody(content);
+			}
+		}
+		return requestBody;
+	}
+
+	private RequestBody prepareMultipartBody(MultipartRequestBody content) {
+		RequestBody body = null;
+		MultipartBody.Builder builder = new MultipartBody.Builder();
+		if(content != null){
+			List<Body> bodyList = content.getBodyList();
+			List<FileRequestBody> fileBodyList = content.getFileBodyList();
+			Map<String,String> formKeyValues = content.getFormKeyValues();
+			List<HeaderedBody> headersBodyList = content.getHeadersBodyList();
+			
+			addFormDataKeyValueParts(builder,formKeyValues);
+			addFormDataFileParts(builder, fileBodyList);
+			addBodyParts(builder, bodyList);
+			addHeadersBodyParts(builder, headersBodyList);
+			body = builder.build();
+		}
+		return body;
+	}
+
+	private void addHeadersBodyParts(okhttp3.MultipartBody.Builder builder, List<HeaderedBody> headersBodyList) {
+		for(HeaderedBody item : headersBodyList){
+			Headers headers = Headers.of(item.getHeaders());
+			Body body = item.getBodyContent();
+			builder.addPart(headers, convertToRequestBody(body));
+		}
+	}
+
+	private void addBodyParts(okhttp3.MultipartBody.Builder builder, List<Body> bodyList) {
+		for(Body body : bodyList){
+			builder.addPart(convertToRequestBody(body));
+		}
+	}
+
+	private void addFormDataFileParts(okhttp3.MultipartBody.Builder builder, List<FileRequestBody> fileBodyList) {
+		for(FileRequestBody item : fileBodyList){
+			builder.addFormDataPart(item.getName(), item.getFileName(), convertToRequestBody(item));
+		}
+	}
+
+	private void addFormDataKeyValueParts(okhttp3.MultipartBody.Builder builder, Map<String, String> formKeyValues) {
+		Set<String> keySet = formKeyValues.keySet();
+		for(String key : keySet){
+			builder.addFormDataPart(key, formKeyValues.get(key));
+		}
+	}
+
+	private RequestBody prepareFormBody(FormRequestBody content) {
+		RequestBody body = null;
+		if(content != null){
+			Map<String, String> formMap = content.getBodyContent();
+			if(formMap != null && !formMap.isEmpty()){
+				FormBody.Builder builder = new FormBody.Builder();
+				for(String key : formMap.keySet()){
+					if(content.isEncoded()){
+						builder.addEncoded(key, formMap.get(key));
+					}else{
+						builder.add(key, formMap.get(key));
+					}
+				}
+				body = builder.build();
+			}
+		}
+		return body;
+	}
+
+	private RequestBody prepareFileBody(FileRequestBody content) {
+		RequestBody body = null;
+		if(content != null){
+			body = RequestBody.create(MediaType.parse(content.getMimeType()), content.getBodyContent());
+		}
+		return body;
+	}
+
+	private RequestBody prepareStreamBody(StreamRequestBody content) {
+		RequestBody body = null;
+		if(content != null){
+			body = new RequestBody() {
+				@Override
+				public void writeTo(BufferedSink sink) throws IOException {
+					InputStream in = content.getBodyContent();
+					byte[] buffer = new byte[16 * 1024];
+					if(in != null){
+						int len = 0;
+						while(IOUtil.hasMoreContent(len = in.read(buffer))){
+							sink.write(buffer, 0, len);
+						}	
+					}
+					CloseUtil.closeIO(in);
+				}
+				
+				@Override
+				public MediaType contentType() {
+					return MediaType.parse(content.getMimeType());
+				}
+			};
+		}
+		return body;
+	}
+
+	private RequestBody prepareStringBody(StringRequestBody content) {
+		if(content != null){
+			return RequestBody.create(MediaType.parse(content.getMimeType()), content.getBodyContent());
+		}
+		return null;
+	}
 
 	/**
 	 * 添加header，多次添加同一个key不会覆盖,同一个key可以对应多个值

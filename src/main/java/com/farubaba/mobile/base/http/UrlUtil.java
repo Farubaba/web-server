@@ -5,11 +5,22 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * foo://example.com:8042/over/there?name=ferret#nose
+ * 
+ * foo://     example.com:8042   /over/there ?name=ferret  #nose
+ * scheme     authority                path      query     fragment
+ * 
+ * @author violet
+ *
+ */
 public class UrlUtil {
 	public static final String TAG = UrlUtil.class.getSimpleName();
 	public static final String HOST_SERVER = "http://localhost:8080/";
 	public static final String HTTP_URL_PREFIX = "http";
 	public static final String HTTPS_URL_PREFIX = "https";
+	public static final String WEBSOCKET_URL_PREFIX = "ws";
+	public static final String WEBSOCKET_S_URL_PREFIX = "wss";
 	public static final String EMPTY_STRING = "";
 	public static final String NULL_STRING = "null";
 	public static final String UNDEFINED = "undefined";

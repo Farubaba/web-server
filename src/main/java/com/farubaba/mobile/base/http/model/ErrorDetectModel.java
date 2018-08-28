@@ -5,11 +5,11 @@ package com.farubaba.mobile.base.http.model;
  * @author violet
  *
  */
-public abstract class ErrorDetectModel implements IModel{
-	private int code;
-	private String message;
-	private String display;
-	private String type;
+public class ErrorDetectModel implements IModel{
+	public int code;
+	public String message;
+	public String display;
+	public String type;
 	public int getCode() {
 		return code;
 	}

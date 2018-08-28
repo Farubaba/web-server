@@ -1,4 +1,4 @@
-package com.farubaba.mobile.demo;
+package com.farubaba.mobile.test;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,14 +9,29 @@ import org.junit.Test;
 
 import com.farubaba.mobile.base.http.HttpManager;
 import com.farubaba.mobile.base.http.OkHttpAdapter;
+import com.farubaba.mobile.base.http.body.StringRequestBody;
+import com.farubaba.mobile.base.http.model.ObjectErrorModel;
+import com.farubaba.mobile.base.http.protocol.HttpMethod;
 import com.farubaba.mobile.base.http.protocol.IHttpCallback;
+import com.farubaba.mobile.base.http.protocol.MimeType;
 import com.farubaba.mobile.base.http.protocol.RequestContext;
 import com.farubaba.mobile.base.http.protocol.RequestHandler;
 import com.farubaba.mobile.base.util.ConcurrentUtil;
 import com.farubaba.mobile.server.dao.ListUser;
 import com.farubaba.mobile.server.dao.ListUser2;
 import com.farubaba.mobile.server.model.ErrorResult;
+import com.farubaba.mobile.server.model.SuccessResult;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+
+/**
+ * Struts2-json-plugin 继承属性无法转化到JSON
+ * MultipartBody 需要验证每一个part对应的MediaType是否正确设置
+ * 
+ * @author violet
+ *
+ */
 public class OkHttpManagerDataCenter {
 	
 	public static final String API_CONTEXT= "http://127.0.0.1:8080/mobile-server/";
@@ -136,6 +151,41 @@ public class OkHttpManagerDataCenter {
 			countDownLatch.await();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void httpManagerPostString(){
+		final CountDownLatch countDownLatch = ConcurrentUtil.newSingleStepCountDownLatch();
+		String postStringUrlWithUrlParamter = "http://127.0.0.1:8080/mobile-server/api/bussiness/postString?name=%1$s&pwd=%2$s";
+		String bodyContent = "hello body, this is the message post by a beautiful girl, who lives on the other size of the earth, don't you exciting?";
+		HttpManager manager = HttpManager.getInstance();
+		RequestContext<ObjectErrorModel> requestContext = new RequestContext<ObjectErrorModel>()
+				.setUrl(String.format(postStringUrlWithUrlParamter, "lzg", "123"))
+				.setMethod(HttpMethod.POST)
+				.setRequestBody(new StringRequestBody()
+						.setMimeType(MimeType.TEXT_X_MARKDOWN)
+						.setBodyContent(bodyContent))
+				.setResultClass(ObjectErrorModel.class)
+				.setCallback(new IHttpCallback<ObjectErrorModel>() {
+					@Override
+					public void onSuccess(ObjectErrorModel result) {
+						System.out.println("正确返回 : result.display = " + result.getDisplay() );
+						System.out.println("正确返回 : result.getError().display = " + result.getError().getDisplay() );
+						countDownLatch.countDown();
+					}
+
+					@Override
+					public void onFailure(ErrorResult result) {
+						System.out.println("错误返回");
+						countDownLatch.countDown();
+					}
+				});
+		manager.sendRequest(requestContext);
+		try {
+			countDownLatch.await();
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}

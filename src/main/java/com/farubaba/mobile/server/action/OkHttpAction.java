@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 
+import com.farubaba.mobile.base.http.model.ErrorDetectModel;
+import com.farubaba.mobile.base.http.model.ObjectErrorModel;
 import com.farubaba.mobile.base.util.IOUtil;
 import com.farubaba.mobile.demo.UserListData;
 import com.farubaba.mobile.server.model.User;
@@ -194,6 +196,23 @@ public class OkHttpAction extends ActionSupport {
 	}
 	
 	
+	public ObjectErrorModel result = new ObjectErrorModel();
+	@Action("postString")
+	public String postString(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		String name = request.getParameter("name");
+		String pwd = request.getParameter("pwd");
+		System.out.println("服务器接收到: name = "+ name + " pwd = "+ pwd);
+		ErrorDetectModel mode = new ErrorDetectModel();
+		mode.setMessage("错误信息");
+		mode.setCode(40009);
+		mode.setDisplay("服务器接收到: name = "+ name + " pwd = "+ pwd);
+		result.setCode(200);
+		result.setDisplay("服务器接收到: name = "+ name + " pwd = "+ pwd);
+		result.setSuccess(true);
+		result.setError(mode);
+		return "json";
+	}
 	public List<User> getUsers() {
 		return users;
 	}
