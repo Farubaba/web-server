@@ -8,6 +8,17 @@ public class FileRequestBody extends Body{
 	private String fileName;
 	private File bodyContent;
 
+	public FileRequestBody() {
+		
+	}
+	
+	public FileRequestBody(String mimeType, String name, String fileName, File bodyContent){
+		this.setMimeType(mimeType);
+		this.setName(name);
+		this.setFileName(fileName);
+		this.setBodyContent(bodyContent);
+	}
+	
 	@Override
 	public FileRequestBody setMimeType(String mimeType) {
 		super.setMimeType(mimeType);

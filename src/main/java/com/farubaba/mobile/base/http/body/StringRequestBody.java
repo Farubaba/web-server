@@ -7,6 +7,15 @@ public class StringRequestBody extends Body {
 	 */
 	private String bodyContent;
 
+	public StringRequestBody() {
+		
+	}
+	
+	public StringRequestBody(String mimeType, String bodyContent){
+		this.setMimeType(mimeType);
+		this.setBodyContent(bodyContent);
+	}
+	
 	@Override
 	public StringRequestBody setMimeType(String mimeType) {
 		super.setMimeType(mimeType);
