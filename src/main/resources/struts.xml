@@ -155,6 +155,8 @@
 	<package namespace="/api/bussiness" name="json-apis" extends="json-default,struts-default">
 		<action name="postString" class="com.farubaba.mobile.server.action.OkHttpAction" method="postString">
         	<result name="json" type="json">
+        	 	<param name="excludeNullProperties" >true</param>
+                <param name="ignoreHierarchy" >false</param>
         		<param name="root">result</param>  
         	</result>
         </action>
