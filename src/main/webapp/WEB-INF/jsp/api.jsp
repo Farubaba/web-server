@@ -20,7 +20,7 @@ String pageName = pageContext.getPage().getClass().getSimpleName();
   	<p>getServletContext.getAttribute() = <%= getServletContext().getAttribute("") %></p>
   	
     <h2><%=pageName.replace("_002d", "-").replace("_", ".") %></h2>
-    <h3>mobile-server提供的所有api接口地址：</h3>
+    <h3>web-server提供的所有api接口地址：</h3>
     
     
     <ol> 

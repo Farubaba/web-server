@@ -51,10 +51,10 @@ public class OkHttpManagerDataCenter {
 	 *
 	 */
 	public static final String port = "8443";
-	public static final String API_CONTEXT= "http://127.0.0.1:"+port+"/mobile-server/";
-	String domain = "http://127.0.0.1:"+port+"/mobile-server";
+	public static final String API_CONTEXT= "http://127.0.0.1:"+port+"/web-server/";
+	String domain = "http://127.0.0.1:"+port+"/web-server";
 	String patternUrl = "api/user/v2?name=%1$s&name=%2$s";
-	String fullUrl = "http://127.0.0.1:"+port+"/mobile-server/api/user/getUsersApi?name=%1$s&name=%2$s";
+	String fullUrl = "http://127.0.0.1:"+port+"/web-server/api/user/getUsersApi?name=%1$s&name=%2$s";
 	
 	@Test
 	public void okHttpGetTest(){
@@ -174,8 +174,8 @@ public class OkHttpManagerDataCenter {
 	@Test
 	public void httpManagerPostString(){
 		final CountDownLatch countDownLatch = ConcurrentUtil.newSingleStepCountDownLatch();
-		String postStringUrlWithUrlParamter = "http://127.0.0.1:"+port+"/mobile-server/api/bussiness/postString?name=%1$s&pwd=%2$s";
-		postStringUrlWithUrlParamter = "https://127.0.0.1:"+port+"/mobile-server/api/bussiness/postString?name=%1$s&pwd=%2$s";
+		String postStringUrlWithUrlParamter = "http://127.0.0.1:"+port+"/web-server/api/bussiness/postString?name=%1$s&pwd=%2$s";
+		postStringUrlWithUrlParamter = "https://127.0.0.1:"+port+"/web-server/api/bussiness/postString?name=%1$s&pwd=%2$s";
 		String bodyContent = "hello body, this is the message post by a beautiful girl, who lives on the other size of the earth, don't you exciting?";
 		HttpManager manager = HttpManager.getInstance();
 		RequestContext<ObjectErrorModel> requestContext = new RequestContext<ObjectErrorModel>()

@@ -6,6 +6,7 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 String pageName = pageContext.getPage().getClass().getSimpleName();
+String contextPath = "web-server";
 %>
 
 <html>
