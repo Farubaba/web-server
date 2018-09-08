@@ -33,8 +33,8 @@ import okio.BufferedSink;
  *
  */
 public class OkHttpFunBase {
-	
-	public static final String API_CONTEXT= "http://127.0.0.1:8080/mobile-server/";
+	public static final String port = "8090";
+	public static final String API_CONTEXT= "http://127.0.0.1:"+port+"/mobile-server/";
 	public static final Gson gson = new GsonBuilder().create();
 	OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
 			//设置代理，让Charles拦截请求

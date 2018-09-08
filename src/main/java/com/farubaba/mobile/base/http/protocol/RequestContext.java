@@ -3,10 +3,10 @@ package com.farubaba.mobile.base.http.protocol;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.farubaba.mobile.base.http.UrlUtil;
 import com.farubaba.mobile.base.http.body.Body;
 import com.farubaba.mobile.base.http.model.ErrorResultType;
 import com.farubaba.mobile.base.http.model.IModel;
+import com.farubaba.mobile.base.util.UrlUtil;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.MultimapBuilder;
 

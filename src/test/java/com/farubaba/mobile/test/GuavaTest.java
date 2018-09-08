@@ -30,4 +30,11 @@ public class GuavaTest {
 			System.out.println(s);
 		}
 	}
+	
+	@Test
+	public void testDifficut(){
+		String target = new String(new char[5]);
+		System.out.println(target);
+		System.out.println(target.replace('\0', '0'));
+	}
 }

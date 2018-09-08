@@ -1,4 +1,4 @@
-package com.farubaba.mobile.base.http;
+package com.farubaba.mobile.base.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,8 +15,6 @@ import java.util.logging.Logger;
 
 import com.farubaba.mobile.base.http.protocol.HttpConfig;
 import com.farubaba.mobile.base.http.protocol.HttpMethod;
-import com.farubaba.mobile.base.util.CloseUtil;
-import com.farubaba.mobile.base.util.IOUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

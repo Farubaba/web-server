@@ -8,7 +8,6 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.Test;
 
 import com.farubaba.mobile.base.http.HttpManager;
-import com.farubaba.mobile.base.http.OkHttpAdapter;
 import com.farubaba.mobile.base.http.body.StringRequestBody;
 import com.farubaba.mobile.base.http.model.ObjectErrorModel;
 import com.farubaba.mobile.base.http.protocol.HttpMethod;
@@ -16,6 +15,7 @@ import com.farubaba.mobile.base.http.protocol.IModelResultCallback;
 import com.farubaba.mobile.base.http.protocol.MimeType;
 import com.farubaba.mobile.base.http.protocol.RequestContext;
 import com.farubaba.mobile.base.http.protocol.RequestHandler;
+import com.farubaba.mobile.base.okhttp.OkHttpAdapter;
 import com.farubaba.mobile.base.util.ConcurrentUtil;
 import com.farubaba.mobile.server.dao.ListUser;
 import com.farubaba.mobile.server.dao.ListUser2;
@@ -34,11 +34,27 @@ import okhttp3.RequestBody;
  */
 public class OkHttpManagerDataCenter {
 	
-	public static final String API_CONTEXT= "http://127.0.0.1:8080/mobile-server/";
-	
-	String domain = "http://127.0.0.1:8080/mobile-server";
+	/**
+	 * 
+	 * @author gaoge
+	 * android 平台支持bks格式证书文件
+	 * 生成bks文件命令：
+	 * 
+	 * keytool -importcert -v -trustcacerts -alias certfengjr -file server.crt 
+	 * -keystore fengjr.bks -storetype BKS 
+	 * -providerclass org.bouncycastle.jce.provider.BouncyCastleProvider -providerpath ./bcprov-jdk15on-146.jar 
+	 * -storepass fengjr601
+	 * 
+	 * 其中server.crt是原格式证书
+	 * fengjr.bks是目标生成证书
+	 * fengjr601是bks格式文件证书密码
+	 *
+	 */
+	public static final String port = "8443";
+	public static final String API_CONTEXT= "http://127.0.0.1:"+port+"/mobile-server/";
+	String domain = "http://127.0.0.1:"+port+"/mobile-server";
 	String patternUrl = "api/user/v2?name=%1$s&name=%2$s";
-	String fullUrl = "http://127.0.0.1:8080/mobile-server/api/user/getUsersApi?name=%1$s&name=%2$s";
+	String fullUrl = "http://127.0.0.1:"+port+"/mobile-server/api/user/getUsersApi?name=%1$s&name=%2$s";
 	
 	@Test
 	public void okHttpGetTest(){
@@ -52,7 +68,7 @@ public class OkHttpManagerDataCenter {
 				.setUrl(String.format(patternUrl, "valueOfName1","valueOfName2"))
 				.setQuerys(querys);
 				
-		manager.sendRequest(requestContext);
+		manager.sendDefaultRequest(requestContext);
 	}
 	
 	
@@ -69,7 +85,7 @@ public class OkHttpManagerDataCenter {
 				.setUrl(String.format(fullUrl, "valueOfName11","valueOfName22"))
 				.setQuerys(querys);
 				
-		manager.sendRequest(requestContext);
+		manager.sendDefaultRequest(requestContext);
 	}
 	
 	@Test
@@ -105,7 +121,7 @@ public class OkHttpManagerDataCenter {
 				.setResultClass(ListUser2.class);
 	
 				
-		httpManager.sendRequest(requestContext);
+		httpManager.sendDefaultRequest(requestContext);
 	}
 	
 	@Test
@@ -144,7 +160,7 @@ public class OkHttpManagerDataCenter {
 				.setCallback(callback)
 				.setResultClass(ListUser2.class);
 		
-		RequestHandler handler = httpManager.sendRequest(requestContext);
+		RequestHandler handler = httpManager.sendDefaultRequest(requestContext);
 		//you can cancel request like below:
 		handler.cancelRequest();
 		try {
@@ -158,7 +174,8 @@ public class OkHttpManagerDataCenter {
 	@Test
 	public void httpManagerPostString(){
 		final CountDownLatch countDownLatch = ConcurrentUtil.newSingleStepCountDownLatch();
-		String postStringUrlWithUrlParamter = "http://127.0.0.1:8080/mobile-server/api/bussiness/postString?name=%1$s&pwd=%2$s";
+		String postStringUrlWithUrlParamter = "http://127.0.0.1:"+port+"/mobile-server/api/bussiness/postString?name=%1$s&pwd=%2$s";
+		postStringUrlWithUrlParamter = "https://127.0.0.1:"+port+"/mobile-server/api/bussiness/postString?name=%1$s&pwd=%2$s";
 		String bodyContent = "hello body, this is the message post by a beautiful girl, who lives on the other size of the earth, don't you exciting?";
 		HttpManager manager = HttpManager.getInstance();
 		RequestContext<ObjectErrorModel> requestContext = new RequestContext<ObjectErrorModel>()
@@ -182,7 +199,7 @@ public class OkHttpManagerDataCenter {
 						countDownLatch.countDown();
 					}
 				});
-		manager.sendRequest(requestContext);
+		manager.sendDefaultRequest(requestContext);
 		try {
 			countDownLatch.await();
 		} catch (InterruptedException e) {

@@ -1,9 +1,12 @@
 package com.farubaba.mobile.base.http;
 
+import java.net.Proxy;
+
 import com.farubaba.mobile.base.http.model.IModel;
 import com.farubaba.mobile.base.http.protocol.HttpAdapter;
 import com.farubaba.mobile.base.http.protocol.RequestContext;
 import com.farubaba.mobile.base.http.protocol.RequestHandler;
+import com.farubaba.mobile.base.okhttp.OkHttpAdapter;
 
 /**
  * 单例HttpDataCenter，可以通过设置不同的HTTPClient来实现不同的http控制；
@@ -16,7 +19,7 @@ public class HttpManager implements HttpAdapter{
 	private static HttpManager instance = new HttpManager();
 	private HttpAdapter httpAdapter;
 	private HttpManager(){
-		setHttpAdapter(new OkHttpAdapter());
+		
 	}
 	
 	public static HttpManager getInstance(){
@@ -24,20 +27,33 @@ public class HttpManager implements HttpAdapter{
 	}
 	
 	public HttpAdapter getHttpAdapter() {
-		return httpAdapter;
+		return httpAdapter == null ? setHttpAdapter(new OkHttpAdapter())  : httpAdapter;
 	}
 
 	public HttpManager setHttpAdapter(HttpAdapter httpAdapter) {
-		if(httpAdapter != null){
-			this.httpAdapter = new OkHttpAdapter();
-		}
+		this.httpAdapter = httpAdapter;
 		return this;
 	}
 
 	@Override
-	public <M extends IModel> RequestHandler sendRequest(
+	public <M extends IModel> RequestHandler sendDefaultRequest(
 			RequestContext<M> requestContext) {
-		return getHttpAdapter().sendRequest(requestContext);
+		return getHttpAdapter().sendDefaultRequest(requestContext);
+	}
+
+	@Override
+	public <M extends IModel> RequestHandler sendTimeoutRequest(RequestContext<M> requestContext) {
+		return getHttpAdapter().sendTimeoutRequest(requestContext);
+	}
+	
+	@Override
+	public <M extends IModel> RequestHandler sendAuthenticatorRequest(RequestContext<M> requestContext) {
+		return getHttpAdapter().sendAuthenticatorRequest(requestContext);
+	}
+
+	@Override
+	public <M extends IModel> RequestHandler sendInterceptorRequest(RequestContext<M> requestContext) {
+		return getHttpAdapter().sendInterceptorRequest(requestContext);
 	}
 
 }

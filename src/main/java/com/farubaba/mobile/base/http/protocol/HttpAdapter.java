@@ -1,5 +1,7 @@
 package com.farubaba.mobile.base.http.protocol;
 
+import java.net.Proxy;
+
 import com.farubaba.mobile.base.http.model.IModel;
 
 /**
@@ -8,5 +10,8 @@ import com.farubaba.mobile.base.http.model.IModel;
  *
  */
 public interface HttpAdapter {
-	public <M extends IModel> RequestHandler sendRequest(RequestContext<M> requestContext);
+	public <M extends IModel> RequestHandler sendDefaultRequest(RequestContext<M> requestContext);
+	public <M extends IModel> RequestHandler sendTimeoutRequest(RequestContext<M> requestContext);
+	public <M extends IModel> RequestHandler sendAuthenticatorRequest(RequestContext<M> requestContext);
+	public <M extends IModel> RequestHandler sendInterceptorRequest(RequestContext<M> requestContext);
 }
