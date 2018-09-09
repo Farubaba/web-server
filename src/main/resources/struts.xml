@@ -8,11 +8,14 @@
     <!-- 
     为了能够让api接口不以.action结尾，必须这样配置，拦截所有url,然后交给对应的action处理。 
     否则api接口都需要.action结尾才能访问，不雅观。但是，这样配置，所有的.jsp .html URL都会被拦截，
-    再去寻找他们对应的action, 一般我们是没有为他们配置action的，所以找不到action就会报错。一般有两种解决方案：
+    再去寻找他们对应的action, 一般我们是没有为他们配置action的，所以找不到action就会报错。一般有三种解决方案：
     1、给每个.jsp .html页面都struts.xml中配置对应的action，并且action返回自身页面。
     2、所有对.jsp .html 等资源的请求，都必须通过action来跳转返回，不要直接通过url来访问。
+    3、配置struts.action.excludePattern，将可以直接访问的资源过略掉，不让struts拦截
     -->
-	<constant name="struts.action.extension" value="" />  
+	<constant name="struts.action.extension" value="" /> 
+	<constant name="struts.action.excludePattern" value="/resources/.*?" />
+	
     <constant name="struts.ui.theme" value="simple" />  
     <constant name="struts.i18n.encoding" value="utf-8" />  
     <constant name="struts.multipart.maxSize" value="1073741824"/>
