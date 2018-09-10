@@ -16,7 +16,7 @@ import java.util.Set;
  */
 public class UrlUtil {
 	public static final String TAG = UrlUtil.class.getSimpleName();
-	public static final String PORT = "8090";
+	public static final String PORT = "8080";
 	public static final String HOST_SERVER = "http://localhost:"+PORT+"/";
 	public static final String HTTP_URL_PREFIX = "http";
 	public static final String HTTPS_URL_PREFIX = "https";

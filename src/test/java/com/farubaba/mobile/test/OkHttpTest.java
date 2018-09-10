@@ -1,6 +1,7 @@
 package com.farubaba.mobile.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -77,8 +78,10 @@ public class OkHttpTest {
 	@Test
 	public void postFile(){
 		File file = new File("/environment/git-repo/web-server/src/main/webapp/resources/files/test.md");
+		assertTrue(file.exists());
 		MediaType mediaType = MediaType.parse("text/x-markdown; charset=utf-8");
 		String returnFileContent = okHttpBase.postFile(mediaType,file);
+		
 		System.out.println("客户端上传文件之后从response中获取的内容：");
 		System.out.println(returnFileContent);
 		assertNotNull(returnFileContent);
